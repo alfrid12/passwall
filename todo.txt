@@ -1,0 +1,19 @@
+Outline:
+	1. Show all wallets in current directory
+	2. Prompt user to select wallet, or type "new" for new wallet
+		a) If user selects a wallet:
+			- Prompt them to log in
+			- If successful, display menu options
+		b) If user types "new":
+			- Prompt user to enter a master password
+			- Confirm password
+			- Create skeleton file
+			- Display menu options
+
+To Do:
+	1. Display all wallets for user at beginning
+	2. 
+
+
+
+Check out async npm package to flatten pyramid
