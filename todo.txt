@@ -11,9 +11,16 @@ Outline:
 			- Display menu options
 
 To Do:
-	1. Display all wallets for user at beginning
-	2. 
-
+	1. Display all wallets for user at beginning, let user select wallet (???)
+	2. Fill out display_menu
+	3. Figure out encryption schema
+	4. Figure out file format
 
 
 Check out async npm package to flatten pyramid
+
+
+Read:
+	https://passwordmaker.org/
+	https://blog.agilebits.com/2013/03/09/guess-why-were-moving-to-256-bit-aes-keys/
+	https://www.quora.com/Can-I-create-my-own-password-manager

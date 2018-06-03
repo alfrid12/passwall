@@ -30,11 +30,13 @@ var current_wallet = {
 
 
 //Display all wallets in current directory
-/*fs.readdir("./", (err, files) => {
-  files.forEach(file => {
-    console.log(file);
-  });
-})*/
+// fs.readdir("./", (err, filenames) => {
+// 	for(let i = 0; i < filenames.length; i++){
+// 		if(filenames[i].includes(".wal")){
+// 			console.log(filenames[i]);
+// 		}
+// 	}
+// });
 
 
 ////////
@@ -56,21 +58,18 @@ rl.question('Enter wallet filename, or "new" for new wallet: ', (response) => {
 //This function creates an empty wallet file from a user-provided name and password
 var create_new_wallet = function(){
 
-	var wallet_name;
+	var new_wallet_name;
 
 	//Prompt user for wallet name
 	rl.question("Enter new wallet name: ", (response) => {
 
-		validate_wallet_name(response);
-
 		//Add file extension if user hasn't done so
-		wallet_name = response;
-		if(!wallet_name.includes(".wal")){
-			wallet_name += ".wal";
+		new_wallet_name = response;
+		if(!new_wallet_name.includes(".wal")){
+			new_wallet_name += ".wal";
 		}
 
-		set_master_password(wallet_name);
-		
+		validate_wallet_name(new_wallet_name);
 	});
 }
 
@@ -94,20 +93,26 @@ var set_master_password = function(wallet_name){
 
 			//If passwords matched:
 			if(response == master_password){
-				create_new_wallet_file(wallet_name, master_password);
+				current_wallet.wallet_name = wallet_name;
+				current_wallet.password = master_password;
+				create_new_wallet_file();
 				display_menu();
 			}
 
+			//If passwords did not match, recurse until they do
 			else{
+				
+				//Reset password prompt
+				rl.password_prompt = "Enter master password: "
 				set_master_password();
 			}
 		});
 	});
 }
 
-var create_new_wallet_file = function(wallet_name, master_password){
+var create_new_wallet_file = function(){
 
-	fs.writeFile(wallet_name, new_wallet_content, function (err) {
+	fs.writeFile(current_wallet.wallet_name, new_wallet_content, function (err) {
 		if (err) throw err;
 		console.log('Saved!');
 	});
@@ -135,15 +140,41 @@ var open_existing_wallet = function(wallet_filename){
 
 
 //This function checks if wallet_name is a valid wallet name
-var validate_wallet_name = function(wallet_name){
+var validate_wallet_name = function(new_wallet_name){
 
 	//Check if name is in use by another wallet file
+	fs.readdir("./", (err, filenames) => {
+
+		if(err) console.log(err);
+
+		else {
+			let duplicate_wallet_name = false;
+
+			for(let i = 0; i < filenames.length; i++){
+				if(new_wallet_name === filenames[i]){
+					console.log("Wallet name already in use");
+					duplicate_wallet_name = true;
+					break;
+				};
+			}
+
+			//If the wallet name is acceptable, prompt the user to set the new master password
+			if(!duplicate_wallet_name) set_master_password(new_wallet_name);
+
+			//Otherwise, "recurse" until the user gives an acceptable wallet name
+			else create_new_wallet();
+		}
+	});
+
+	
 
 }
 
 
 var display_menu = function(){
-	console.log("");
+	console.log("*******************************************");
+	console.log("Current wallet: " + current_wallet.wallet_name);
+	console.log("*******************************************\n");
 }
 
 
